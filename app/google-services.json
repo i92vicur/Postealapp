@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "752993656759",
+    "project_id": "postealapp-c013a",
+    "storage_bucket": "postealapp-c013a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752993656759:android:a312349f11a24ad12ad232",
+        "android_client_info": {
+          "package_name": "com.androidcoursehogent.postealapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAO_jElm95RRJqoEMbDCK138il4svP2BCs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
