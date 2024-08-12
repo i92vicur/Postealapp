@@ -9,18 +9,29 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
-    tertiary = Pink80
+    tertiary = Pink80,
+
+    //Pruebita para la barra
+    surface = Color(0xFF121212), // Color para el fondo de la barra en modo oscuro
+    onSurface = Color(0xFFBB86FC), // Color para ícono seleccionado en modo oscuro
+    onSurfaceVariant = Color(0xFF888888) // Color para ícono no seleccionado en modo oscuro
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
-    tertiary = Pink40
+    tertiary = Pink40,
+
+    //Pruebita para la barra
+    surface = Color(0xFFFFFFFF), // Color para el fondo de la barra en modo claro
+    onSurface = Color(0xFF6200EE), // Color para ícono seleccionado en modo claro
+    onSurfaceVariant = Color(0xFF888888) // Color para ícono no seleccionado en modo claro
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

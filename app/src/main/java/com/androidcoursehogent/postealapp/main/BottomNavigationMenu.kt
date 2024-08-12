@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,25 +29,34 @@ enum class BottomNavigationItem(val icon: Int, val navDestination: DestinationSc
 
 @Composable
 fun BottomNavigationMenu(selectedItem: BottomNavigationItem, navController: NavController) {
+
+    val colorScheme = MaterialTheme.colorScheme
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(top = 4.dp)
-            .background(Color.White)
+            .padding(top = 5.dp)
+            .background(colorScheme.surface)
+        //.background(Color.White)
     ) {
         for (item in BottomNavigationItem.values()) {
             Image(
                 painter = painterResource(id = item.icon),
                 contentDescription = "BottomMenuOption",
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(50.dp)
                     .padding(5.dp)
                     .weight(1f)
                     .clickable {
                         navigateTo(navController, item.navDestination)
                     },
-                colorFilter = if (item == selectedItem) ColorFilter.tint(Color.Black) else ColorFilter.tint(Color.Gray)
+                colorFilter = if (item == selectedItem) {
+                    ColorFilter.tint(colorScheme.onSurface) // Usa el color del ícono seleccionado
+                } else {
+                    ColorFilter.tint(colorScheme.onSurfaceVariant) // Color para ícono no seleccionado
+                }
+                //colorFilter = if (item == selectedItem) ColorFilter.tint(Color.Black) else ColorFilter.tint(Color.Gray)
             )
         }
     }

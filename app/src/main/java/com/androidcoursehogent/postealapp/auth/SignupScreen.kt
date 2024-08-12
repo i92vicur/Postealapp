@@ -58,11 +58,11 @@ fun SignupScreen(navController: NavController, vm: PostealappViewModel) {
             val passState = remember { mutableStateOf(TextFieldValue()) }
 
             Image(
-                painter = painterResource(id = R.drawable.mispasio),
+                painter = painterResource(id = R.drawable.logo_portada_login),
                 contentDescription = "applogo",
                 modifier = Modifier
-                    .width(250.dp)
-                    .padding(top = 16.dp)
+                    .width(320.dp)
+                    .padding(top = 16.dp, bottom = 26.dp)
                     .padding(8.dp)
             )
 
