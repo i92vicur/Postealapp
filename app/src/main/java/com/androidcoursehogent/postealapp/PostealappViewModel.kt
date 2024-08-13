@@ -3,6 +3,8 @@ package com.androidcoursehogent.postealapp
 import android.net.Uri
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.androidcoursehogent.postealapp.data.CommentData
 import com.androidcoursehogent.postealapp.data.Event
@@ -498,6 +500,13 @@ class PostealappViewModel @Inject constructor(
                 followers.value = documents.size()
             }
 
+    }
+
+    private val _isDarkTheme = MutableLiveData(true)
+    val isDarkTheme: LiveData<Boolean> = _isDarkTheme
+
+    fun setTheme(isDark: Boolean) {
+        _isDarkTheme.value = isDark
     }
 
 }

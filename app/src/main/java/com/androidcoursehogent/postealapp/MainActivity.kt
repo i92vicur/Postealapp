@@ -11,6 +11,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -73,7 +75,9 @@ fun PostealallApp() {
     val vm = hiltViewModel<PostealappViewModel>()
     val navController = rememberNavController()
 
-    PostealappTheme {
+    val isDarkTheme by vm.isDarkTheme.observeAsState(false)
+
+    PostealappTheme(darkTheme = isDarkTheme) {
 
         NotificationMessage(vm = vm)
 

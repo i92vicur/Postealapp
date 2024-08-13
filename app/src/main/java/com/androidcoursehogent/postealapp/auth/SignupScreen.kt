@@ -1,9 +1,12 @@
 package com.androidcoursehogent.postealapp.auth
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,6 +15,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import  androidx.compose.runtime.Composable
@@ -42,7 +46,11 @@ fun SignupScreen(navController: NavController, vm: PostealappViewModel) {
 
     val focus = LocalFocusManager.current
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -57,20 +65,25 @@ fun SignupScreen(navController: NavController, vm: PostealappViewModel) {
             val emailState = remember { mutableStateOf(TextFieldValue()) }
             val passState = remember { mutableStateOf(TextFieldValue()) }
 
-            Image(
-                painter = painterResource(id = R.drawable.logo_portada_login),
-                contentDescription = "applogo",
-                modifier = Modifier
-                    .width(320.dp)
-                    .padding(top = 16.dp, bottom = 26.dp)
-                    .padding(8.dp)
-            )
+            Row(modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+                horizontalArrangement = Arrangement.Center)
+            {
+                Image(
+                    painter = painterResource(id = R.drawable.logo_portada_login),
+                    contentDescription = "applogo",
+                    modifier = Modifier
+                        .width(320.dp)
+                        .padding(8.dp)
+                )
+            }
 
             Text(
                 text = "Signup",
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(16.dp),
                 fontSize = 30.sp,
-                fontFamily = FontFamily.SansSerif
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             OutlinedTextField(

@@ -1,5 +1,6 @@
 package com.androidcoursehogent.postealapp.main
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -37,7 +39,10 @@ fun SearchScreen(navController: NavController, vm: PostealappViewModel) {
     val searchedPosts = vm.searchedPosts.value
     var searchTerm by rememberSaveable { mutableStateOf("") }
 
-    Column() {
+    Column(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         SearchBar(
             searchTerm = searchTerm,
             onSearchChange = { searchTerm = it },

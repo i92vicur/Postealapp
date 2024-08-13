@@ -2,6 +2,7 @@ package com.androidcoursehogent.postealapp.main
 
 import android.net.Uri
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,8 +17,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -47,52 +50,60 @@ fun NewPostScreen(navController: NavController, vm: PostealappViewModel, encoded
     val scrollState = rememberScrollState()
     val focusManager = LocalFocusManager.current
 
-    Column(
+    Surface (
         modifier = Modifier
-            .verticalScroll(scrollState)
-            .fillMaxWidth()
-    ) {
-        Row(
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ){
+
+        Column(
             modifier = Modifier
+                .verticalScroll(scrollState)
                 .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "Cancel", modifier = Modifier.clickable { navController.popBackStack() })
-            Text(text = "Post", modifier = Modifier.clickable {
-                focusManager.clearFocus()
-                vm.onNewPost(Uri.parse(imageUri), description) { navController.popBackStack() }
-            })
-        }
-
-        CommonDivider()
-
-        Image(
-            painter = rememberAsyncImagePainter(model = imageUri),
-            contentDescription = "newPost",
-            modifier = Modifier
-                .fillMaxWidth()
-                .defaultMinSize(minHeight = 150.dp),
-            contentScale = ContentScale.FillWidth
-        )
-
-        Row(modifier = Modifier.padding(16.dp)) {
-            OutlinedTextField(
-                value = description,
-                onValueChange = { description = it },
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp),
-                label = { Text(text = "Description") },
-                singleLine = false,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    unfocusedTextColor = Color.Black,
-                    focusedTextColor = Color.Black
-                )
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = "Cancel", modifier = Modifier.clickable { navController.popBackStack() })
+                Text(text = "Post", color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.clickable {
+                    focusManager.clearFocus()
+                    vm.onNewPost(Uri.parse(imageUri), description) { navController.popBackStack() }
+                })
+            }
+
+            CommonDivider()
+
+            Image(
+                painter = rememberAsyncImagePainter(model = imageUri),
+                contentDescription = "newPost",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .defaultMinSize(minHeight = 150.dp),
+                contentScale = ContentScale.FillWidth
             )
+
+            Row(modifier = Modifier.padding(16.dp)) {
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp),
+                    label = { Text(text = "Description") },
+                    singleLine = false,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        unfocusedTextColor = Color.Black,
+                        focusedTextColor = Color.Black
+                    )
+                )
+            }
         }
+
     }
 
     val inProgress = vm.inProgress.value

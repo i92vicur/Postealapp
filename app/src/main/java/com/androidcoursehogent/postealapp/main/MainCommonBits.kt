@@ -11,6 +11,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -140,14 +141,19 @@ fun UserImageCard(
 ) {
 
     Card(shape = CircleShape, modifier = modifier) {
-        if (userImage.isNullOrEmpty()) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_user),
-                contentDescription = null,
-                colorFilter = ColorFilter.tint(Color.Gray)
-            )
-        } else {
-            CommonImage(data = userImage)
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
+        ){
+            if (userImage.isNullOrEmpty()) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_user),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(Color.Gray)
+                )
+            } else {
+                CommonImage(data = userImage)
+            }
         }
     }
 

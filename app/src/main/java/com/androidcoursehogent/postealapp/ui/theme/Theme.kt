@@ -18,9 +18,10 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = Pink80,
 
     //Pruebita para la barra
-    surface = Color(0xFF121212), // Color para el fondo de la barra en modo oscuro
+    background = Color(0xFF1F1E1E),
+    surface = Color(0xFF1F1E1E), // Color para el fondo de la barra en modo oscuro
     onSurface = Color(0xFFBB86FC), // Color para ícono seleccionado en modo oscuro
-    onSurfaceVariant = Color(0xFF888888) // Color para ícono no seleccionado en modo oscuro
+    onSurfaceVariant = Color(0xFF888888), // Color para ícono no seleccionado en modo oscuro
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -29,7 +30,8 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Pink40,
 
     //Pruebita para la barra
-    surface = Color(0xFFFFFFFF), // Color para el fondo de la barra en modo claro
+    surface = Color(0xFFFFFFFF),
+    background = Color(0xFFFFFFFF),// Color para el fondo de la barra en modo claro
     onSurface = Color(0xFF6200EE), // Color para ícono seleccionado en modo claro
     onSurfaceVariant = Color(0xFF888888) // Color para ícono no seleccionado en modo claro
 

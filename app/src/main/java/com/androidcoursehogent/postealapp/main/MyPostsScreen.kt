@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.layout.ContentScale
 import com.androidcoursehogent.postealapp.data.PostData
 
@@ -72,7 +73,12 @@ fun MyPostsScreen(navController: NavController, vm: PostealappViewModel) {
 
     val followers = vm.followers.value
 
-    Column {
+    val colorScheme = MaterialTheme.colorScheme
+
+    Column (
+        modifier = Modifier
+            .background(colorScheme.surface)
+    ){
         Column(modifier = Modifier.weight(1f)) {
             Row {
                 ProfileImage(userData?.imageUrl) {
@@ -113,7 +119,7 @@ fun MyPostsScreen(navController: NavController, vm: PostealappViewModel) {
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                colors = ButtonDefaults.buttonColors(containerColor = colorScheme.onSurface),
                 elevation = ButtonDefaults.elevatedButtonElevation(
                     defaultElevation = 0.dp,
                     pressedElevation = 0.dp,
