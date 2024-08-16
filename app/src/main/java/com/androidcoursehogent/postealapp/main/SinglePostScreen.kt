@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import com.androidcoursehogent.postealapp.R
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,22 +40,50 @@ import com.androidcoursehogent.postealapp.PostealappViewModel
 import com.androidcoursehogent.postealapp.data.PostData
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.material3.ExperimentalMaterial3Api
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SinglePostScreen(navController: NavController, vm: PostealappViewModel, post: PostData) {
 
     val comments = vm.comments.value
     val updatedPost = vm.posts.value.find { it.postId == post.postId } ?: post
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = post.postId!!) {
         vm.getComments(post.postId!!)
         vm.observePostLikes(post.postId!!)
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text(text = "Delete Post") },
+            text = { Text("Are you sure you want to delete this post?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDeleteDialog = false
+                        vm.deletePost(post.postId!!, navController)
+                    }
+                ) {
+                    Text("Delete")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDeleteDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 
     Box(
@@ -69,12 +98,28 @@ fun SinglePostScreen(navController: NavController, vm: PostealappViewModel, post
                     .padding(8.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                Text(
-                    text = "Back",
-                    color = Color.Red,
+                Row(
                     modifier = Modifier
-                        .padding(8.dp)
-                        .clickable { navController.popBackStack() })
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Back",
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier
+                            .clickable { navController.popBackStack() }
+                    )
+
+                    if (updatedPost.userId == vm.userData.value?.userId) {
+                        Text(
+                            text = "Delete",
+                            color = Color.Red,
+                            modifier = Modifier
+                                .clickable { showDeleteDialog = true }
+                        )
+                    }
+                }
 
                 CommonDivider()
 

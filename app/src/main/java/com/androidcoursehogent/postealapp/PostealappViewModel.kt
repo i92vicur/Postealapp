@@ -7,10 +7,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import com.androidcoursehogent.postealapp.data.CommentData
 import com.androidcoursehogent.postealapp.data.Event
 import com.androidcoursehogent.postealapp.data.PostData
 import com.androidcoursehogent.postealapp.data.UserData
+import com.androidcoursehogent.postealapp.main.navigateTo
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -307,7 +309,7 @@ class PostealappViewModel @Inject constructor(
 
     }
 
-    private fun refreshPosts() {
+    private fun refreshPosts(onRefreshed: () -> Unit = {}) {
         val currentUid = auth.currentUser?.uid
         if (currentUid != null) {
             refreshPostsProgress.value = true
@@ -315,6 +317,7 @@ class PostealappViewModel @Inject constructor(
                 .addOnSuccessListener { documents ->
                     convertPosts(documents, posts)
                     refreshPostsProgress.value = false
+                    onRefreshed() // Llamar al callback después de refrescar
                 }
                 .addOnFailureListener { exc ->
                     handleException(exc, "Cannot fetch posts")
@@ -325,6 +328,7 @@ class PostealappViewModel @Inject constructor(
             onLogout()
         }
     }
+
 
     private fun convertPosts(documents: QuerySnapshot, outState: MutableState<List<PostData>>){
         val newPosts = mutableListOf<PostData>()
@@ -548,5 +552,43 @@ class PostealappViewModel @Inject constructor(
     fun setTheme(isDark: Boolean) {
         _isDarkTheme.value = isDark
     }
+
+    fun deletePost(postId: String, navController: NavController) {
+        inProgress.value = true
+
+        // Eliminar comentarios relacionados
+        db.collection(COMMENTS).whereEqualTo("postId", postId).get()
+            .addOnSuccessListener { documents ->
+                val batch = db.batch()
+                for (document in documents) {
+                    batch.delete(document.reference)
+                }
+
+                // Eliminar el post en sí
+                db.collection(POSTS).document(postId).delete()
+                    .addOnSuccessListener {
+                        batch.commit().addOnSuccessListener {
+                            inProgress.value = false
+                            popupNotification.value = Event("Post deleted successfully")
+                            refreshPosts {
+                                navigateTo(
+                                    navController = navController,
+                                    dest = DestinationScreen.MyPosts
+                                )
+                            }
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        handleException(e, "Failed to delete post")
+                        inProgress.value = false
+                    }
+            }
+            .addOnFailureListener { e ->
+                handleException(e, "Failed to delete comments")
+                inProgress.value = false
+            }
+    }
+
+
 
 }
