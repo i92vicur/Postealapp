@@ -53,6 +53,12 @@ fun PostealappTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    val typography = if (darkTheme) {
+        DarkTypography
+    } else {
+        LightTypography
+    }
+
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
@@ -65,7 +71,7 @@ fun PostealappTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = typography,
         content = content
     )
 }

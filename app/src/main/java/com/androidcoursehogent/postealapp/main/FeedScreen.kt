@@ -3,6 +3,7 @@ package com.androidcoursehogent.postealapp.main
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,27 +55,37 @@ fun FeedScreen(navController: NavController, vm: PostealappViewModel) {
 
     val colorScheme = MaterialTheme.colorScheme
 
+    //Para lo del loguito
+    val isDarkTheme = isSystemInDarkTheme()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorScheme.surface)
+            .background(colorScheme.background)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .background(Color.Transparent),
-            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.Absolute.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             UserImageCard(userImage = userData?.imageUrl)
 
+            val logoResource = if (isDarkTheme) {
+                R.drawable.app_name_dark_ic
+            } else {
+                R.drawable.app_name_ic
+            }
+
             Image(
-                painter = painterResource(id = R.drawable.app_name_ic),
+                painter = painterResource(logoResource),
                 contentDescription = "app name logo",
                 modifier = Modifier
-                    .width(170.dp)
+                    .width(200.dp)
                     .padding(8.dp)
+                    .padding(end = 25.dp)
             )
         }
         PostsList(
@@ -105,17 +116,14 @@ fun PostsList(
 ) {
     Box(modifier = modifier) {
         LazyColumn {
-            items(items = posts) {
+            items(items = posts) { post ->
                 Post(
-                    post = it,
+                    post = post,
                     currentUserId = currentUserId,
                     vm
                 ) {
-                    navigateTo(
-                        navController,
-                        DestinationScreen.SinglePost,
-                        NavParameters("post", it)
-                    )
+                    navController.currentBackStackEntry?.savedStateHandle?.set("post", post)
+                    navController.navigate(DestinationScreen.SinglePost.route)
                 }
             }
         }

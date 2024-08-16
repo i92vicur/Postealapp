@@ -37,6 +37,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import com.androidcoursehogent.postealapp.data.PostData
 
@@ -138,11 +139,9 @@ fun MyPostsScreen(navController: NavController, vm: PostealappViewModel) {
                     .padding(1.dp)
                     .fillMaxSize()
             ) { post ->
-                navigateTo(
-                    navController = navController,
-                    DestinationScreen.SinglePost,
-                    NavParameters("post", post)
-                )
+                // Guarda el PostData en el savedStateHandle antes de navegar
+                navController.currentBackStackEntry?.savedStateHandle?.set("post", post)
+                navController.navigate(DestinationScreen.SinglePost.route)
             }
         }
         BottomNavigationMenu(
@@ -181,8 +180,9 @@ fun ProfileImage(imageUrl: String?, onClick: () -> Unit) {
 
             Image(
                 painter = painterResource(id = R.drawable.ic_add),
+                colorFilter = ColorFilter.tint(Color.White),
                 contentDescription = "Add a post icon",
-                modifier = Modifier.background(Color.Blue)
+                modifier = Modifier.background(Color.Red)
             )
 
         }
@@ -241,19 +241,19 @@ fun PostsRow(item: PostRow, onPostClick: (PostData) -> Unit) {
             imageUrl = item.post1?.postImage,
             modifier = Modifier
                 .weight(1f)
-                .clickable { item.post1?.let { post -> onPostClick } }
+                .clickable { item.post1?.let { post -> onPostClick(post) } }
         )
         PostImage(
             imageUrl = item.post2?.postImage,
             modifier = Modifier
                 .weight(1f)
-                .clickable { item.post2?.let { post -> onPostClick } }
+                .clickable { item.post2?.let { post -> onPostClick(post) } }
         )
         PostImage(
             imageUrl = item.post3?.postImage,
             modifier = Modifier
                 .weight(1f)
-                .clickable { item.post3?.let { post -> onPostClick } }
+                .clickable { item.post3?.let { post -> onPostClick(post) } }
         )
     }
 }

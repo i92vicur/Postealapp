@@ -14,10 +14,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
@@ -36,6 +38,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 
 import androidx.compose.ui.unit.dp
+import androidx.media3.effect.Crop
 import androidx.navigation.NavController
 import coil.compose.AsyncImagePainter
 import coil.compose.ImagePainter
@@ -123,8 +126,8 @@ fun CommonImage(
     Image(
         painter = painter,
         contentDescription = "Profile picture",
-        modifier = modifier,
-        contentScale = contentScale
+        modifier = modifier.fillMaxSize(),
+        contentScale = ContentScale.Crop
     )
 
     if (painter.state is AsyncImagePainter.State.Loading) {
@@ -136,11 +139,14 @@ fun CommonImage(
 @Composable
 fun UserImageCard(
     userImage: String?, modifier: Modifier = Modifier
-        .padding(8.dp)
-        .size(64.dp)
+        .padding(10.dp)
+        .size(58.dp)
 ) {
 
-    Card(shape = CircleShape, modifier = modifier) {
+    Card(
+        shape = RoundedCornerShape(16.dp), // Cambia CircleShape a RoundedCornerShape con el radio deseado
+        modifier = modifier
+    ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier.fillMaxSize()

@@ -1,12 +1,18 @@
 package com.androidcoursehogent.postealapp.main
 
+import android.util.Log
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import com.androidcoursehogent.postealapp.R
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,53 +37,78 @@ import coil.compose.rememberAsyncImagePainter
 import com.androidcoursehogent.postealapp.DestinationScreen
 import com.androidcoursehogent.postealapp.PostealappViewModel
 import com.androidcoursehogent.postealapp.data.PostData
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 
 @Composable
 fun SinglePostScreen(navController: NavController, vm: PostealappViewModel, post: PostData) {
 
     val comments = vm.comments.value
+    val updatedPost = vm.posts.value.find { it.postId == post.postId } ?: post
 
-    LaunchedEffect(key1 = Unit) {
-        vm.getComments(post.postId)
+    LaunchedEffect(key1 = post.postId!!) {
+        vm.getComments(post.postId!!)
+        vm.observePostLikes(post.postId!!)
     }
 
-    post.userId?.let {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(8.dp)
-        ) {
-            Text(text = "Back", modifier = Modifier.clickable { navController.popBackStack() })
+    Box(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .fillMaxSize()
+    ) {
+        updatedPost.userId?.let {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Text(
+                    text = "Back",
+                    color = Color.Red,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clickable { navController.popBackStack() })
+
+                CommonDivider()
+
+                SinglePostDisplay(
+                    navController = navController,
+                    vm = vm,
+                    post = updatedPost,
+                    nbComments = comments.size
+                )
+            }
         }
-
-        CommonDivider()
-
-        SinglePostDisplay(
-            navController = navController,
-            vm = vm,
-            post = post,
-            nbComments = comments.size
-        )
     }
 
 }
 
 @Composable
 fun SinglePostDisplay(
+
     navController: NavController,
     vm: PostealappViewModel,
     post: PostData,
     nbComments: Int
 ) {
-
     val userData = vm.userData.value
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)
-    ) {
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+    var isLikedAnimationVisible by remember { mutableStateOf(false) }
+    val scale = remember { Animatable(0f) }
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Card(
                 shape = CircleShape, modifier = Modifier
                     .padding(8.dp)
@@ -89,10 +121,10 @@ fun SinglePostDisplay(
             }
 
             Text(text = post.username ?: "")
-            Text(text = " . ", modifier = Modifier.padding(8.dp))
+            Text(text = " -> ", modifier = Modifier.padding(8.dp))
 
             if (userData?.userId == post.userId) {
-                // Current users post, don't show anything
+                // Current user's post, don't show anything
             } else if (userData?.following?.contains(post.userId) == true) {
                 Text(
                     text = "Following",
@@ -101,46 +133,105 @@ fun SinglePostDisplay(
             } else {
                 Text(
                     text = "Follow",
-                    color = Color.Blue,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.clickable { vm.onFollowClick(post.userId!!) })
             }
         }
-    }
 
-    Box {
-        val modifier = Modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = 150.dp)
-        CommonImage(
-            data = post.postImage,
-            modifier = modifier,
-            contentScale = ContentScale.FillWidth
-        )
-    }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = 150.dp)
+                .padding(vertical = 8.dp)
+        ) {
+            CommonImage(
+                data = post.postImage,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onDoubleTap = {
+                                vm.onLikePost(post)
+                                isLikedAnimationVisible = true
+                            }
+                        )
+                    },
+                contentScale = ContentScale.Crop
+            )
 
-    Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_fav),
-            contentDescription = "user post image",
-            modifier = Modifier.size(24.dp),
-            colorFilter = ColorFilter.tint(Color.Red)
-        )
-        Text(text = " ${post.likes?.size ?: 0} likes", modifier = Modifier.padding(start = 0.dp))
-    }
-
-    Row(modifier = Modifier.padding(8.dp)) {
-        Text(text = post.username ?: "", fontWeight = FontWeight.Bold)
-        Text(text = post.postDescription ?: "", modifier = Modifier.padding(start = 0.dp))
-    }
-
-    Row(modifier = Modifier.padding(8.dp)) {
-        Text(text = "$nbComments comments", color = Color.Gray, modifier = Modifier
-            .padding(8.dp)
-            .clickable {
-                post.postId?.let {
-                    navController.navigate(DestinationScreen.CommentsScreen.createRoute(it))
+            LaunchedEffect(isLikedAnimationVisible) {
+                if (isLikedAnimationVisible) {
+                    scale.animateTo(
+                        targetValue = 1.5f,
+                        animationSpec = tween(durationMillis = 200)
+                    )
+                    scale.animateTo(
+                        targetValue = 0f,
+                        animationSpec = tween(durationMillis = 200)
+                    )
+                    isLikedAnimationVisible = false
                 }
-            })
-    }
+            }
 
+            // Icono de like que aparece y desaparece
+            if (isLikedAnimationVisible) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_fav),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                    contentDescription = "Like animation",
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(100.dp) // Tamaño del icono
+                        .graphicsLayer(
+                            scaleX = scale.value,
+                            scaleY = scale.value,
+                            alpha = 0.5f
+                        )
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_fav),
+                contentDescription = "user post image",
+                modifier = Modifier.size(24.dp),
+                colorFilter = ColorFilter.tint(Color.Red)
+            )
+            Text(
+                text = " ${post.likes?.size ?: 0} likes",
+                modifier = Modifier.padding(start = 8.dp)
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Text(text = post.username ?: "", fontWeight = FontWeight.Bold)
+            Text(text = post.postDescription ?: "", modifier = Modifier.padding(start = 8.dp))
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Text(
+                text = "$nbComments comments",
+                color = Color.Gray,
+                modifier = Modifier.clickable {
+                    post.postId?.let {
+                        navController.navigate(DestinationScreen.CommentsScreen.createRoute(it))
+                    }
+                })
+        }
+    }
 }

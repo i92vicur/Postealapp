@@ -101,7 +101,7 @@ fun LoginScreen(navController: NavController, vm: PostealappViewModel) {
                     vm.onLogin(emailState.value.text, passState.value.text)
                 }, modifier = Modifier.padding(8.dp)
             ) {
-                Text(text = "LOGIN")
+                Text(text = "LOGIN", color = Color.White)
             }
 
             Text(

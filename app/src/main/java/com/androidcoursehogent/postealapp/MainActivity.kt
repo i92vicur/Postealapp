@@ -10,6 +10,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -67,51 +69,52 @@ fun PostealallApp() {
     val vm = hiltViewModel<PostealappViewModel>()
     val navController = rememberNavController()
 
+    val isDarkTheme by vm.isDarkTheme.observeAsState(false)
+
     NotificationMessage(vm = vm)
 
-    NavHost(navController = navController, startDestination = DestinationScreen.Signup.route) {
-        composable(DestinationScreen.Signup.route) {
-            SignupScreen(navController = navController, vm = vm)
-        }
-        composable(DestinationScreen.Login.route) {
-            LoginScreen(navController = navController, vm = vm)
-        }
-        composable(DestinationScreen.Feed.route) {
-            FeedScreen(navController = navController, vm = vm)
-        }
-        composable(DestinationScreen.Search.route) {
-            SearchScreen(navController = navController, vm = vm)
-        }
-        composable(DestinationScreen.MyPosts.route) {
-            MyPostsScreen(navController = navController, vm = vm)
-        }
-        composable(DestinationScreen.Profile.route) {
-            ProfileScreen(navController = navController, vm = vm)
-        }
-        composable(DestinationScreen.NewPost.route) { navBackStachEntry ->
-            val imageUri = navBackStachEntry.arguments?.getString("imageUri")
-            imageUri?.let {
-                NewPostScreen(navController = navController, vm = vm, encodedUri = it)
+    PostealappTheme(darkTheme = isDarkTheme){
+
+        NavHost(navController = navController, startDestination = DestinationScreen.Signup.route) {
+            composable(DestinationScreen.Signup.route) {
+                SignupScreen(navController = navController, vm = vm)
+            }
+            composable(DestinationScreen.Login.route) {
+                LoginScreen(navController = navController, vm = vm)
+            }
+            composable(DestinationScreen.Feed.route) {
+                FeedScreen(navController = navController, vm = vm)
+            }
+            composable(DestinationScreen.Search.route) {
+                SearchScreen(navController = navController, vm = vm)
+            }
+            composable(DestinationScreen.MyPosts.route) {
+                MyPostsScreen(navController = navController, vm = vm)
+            }
+            composable(DestinationScreen.Profile.route) {
+                ProfileScreen(navController = navController, vm = vm)
+            }
+            composable(DestinationScreen.NewPost.route) { navBackStachEntry ->
+                val imageUri = navBackStachEntry.arguments?.getString("imageUri")
+                imageUri?.let {
+                    NewPostScreen(navController = navController, vm = vm, encodedUri = it)
+                }
+            }
+            composable(DestinationScreen.SinglePost.route) {
+                val post = navController.previousBackStackEntry?.savedStateHandle?.get<PostData>("post")
+                post?.let {
+                    SinglePostScreen(navController = navController, post = it, vm = vm)
+                }
+            }
+
+            composable(DestinationScreen.CommentsScreen.route){ navBackStackEntry ->
+                val postId = navBackStackEntry.arguments?.getString("postId")
+                postId?.let { CommentsScreen(navController = navController, vm = vm, postId = it) }
             }
         }
-        composable(DestinationScreen.SinglePost.route) {
-            val postData = navController
-                .previousBackStackEntry
-                ?.arguments
-                ?.getParcelable<PostData>("post")
-            postData?.let {
-                SinglePostScreen(
-                    navController = navController,
-                    vm = vm,
-                    post = postData
-                )
-            }
-        }
-        composable(DestinationScreen.CommentsScreen.route){ navBackStackEntry ->
-            val postId = navBackStackEntry.arguments?.getString("postId")
-            postId?.let { CommentsScreen(navController = navController, vm = vm, postId = it) }
-        }
+
     }
+
 }
 
 @Preview(showBackground = true)

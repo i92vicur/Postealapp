@@ -57,12 +57,9 @@ fun SearchScreen(navController: NavController, vm: PostealappViewModel) {
                 .fillMaxWidth()
                 .padding(8.dp),
         ) { post ->
-            navigateTo(
-                navController = navController,
-                dest = DestinationScreen.SinglePost,
-                //me salian con el alt dos funciones que se llamaban igual, cuidado
-                NavParameters("post", post)
-            )
+            // Guarda el PostData en el savedStateHandle antes de navegar
+            navController.currentBackStackEntry?.savedStateHandle?.set("post", post)
+            navController.navigate(DestinationScreen.SinglePost.route)
         }
 
         BottomNavigationMenu(

@@ -1,5 +1,6 @@
 package com.androidcoursehogent.postealapp.main
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text2.input.TextFieldCharSequence
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -39,7 +41,10 @@ fun CommentsScreen(navController: NavController, vm: PostealappViewModel, postId
     val comments = vm.comments.value
     val commentsProgress = vm.commentsProgress.value
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background),
+        verticalArrangement = Arrangement.SpaceBetween) {
 
         if (commentsProgress) {
             Column(
@@ -49,9 +54,9 @@ fun CommentsScreen(navController: NavController, vm: PostealappViewModel, postId
             ) {
                 CommonProgressSpinner()
             }
-        } else if (comments.isEmpty()){
+        } else if (comments.isEmpty()) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(top = 300.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -59,7 +64,7 @@ fun CommentsScreen(navController: NavController, vm: PostealappViewModel, postId
             }
         } else {
             LazyColumn(modifier = Modifier.weight(1f)) {
-                items(items = comments){ comment ->
+                items(items = comments) { comment ->
                     CommentRow(comment)
                 }
             }
@@ -68,7 +73,7 @@ fun CommentsScreen(navController: NavController, vm: PostealappViewModel, postId
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(12.dp)
         ) {
             TextField(
                 value = commentText,
@@ -89,9 +94,11 @@ fun CommentsScreen(navController: NavController, vm: PostealappViewModel, postId
 
             Button(
                 onClick = {
-                    vm.createComment(postId = postId, text = commentText)
-                    commentText = ""
-                    focusManager.clearFocus()
+                    if (commentText.isNotBlank()) {
+                        vm.createComment(postId = postId, text = commentText)
+                        commentText = ""
+                        focusManager.clearFocus()
+                    }
                 },
                 modifier = Modifier.padding(start = 8.dp)
             ) {
@@ -105,10 +112,12 @@ fun CommentsScreen(navController: NavController, vm: PostealappViewModel, postId
 @Composable
 fun CommentRow(comment: CommentData) {
 
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .padding(8.dp)){
-        Text(text = comment.username ?: "", fontWeight = FontWeight.Bold)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(18.dp)
+    ) {
+        Text(text = comment.username ?: "", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
         Text(text = comment.text ?: "", modifier = Modifier.padding(start = 8.dp))
     }
 

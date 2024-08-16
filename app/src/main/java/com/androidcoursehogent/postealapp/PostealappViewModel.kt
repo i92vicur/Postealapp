@@ -1,6 +1,7 @@
 package com.androidcoursehogent.postealapp
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
@@ -419,33 +420,72 @@ class PostealappViewModel @Inject constructor(
 
     }
 
-    fun onLikePost(postData: PostData){
+    fun onLikePost(postData: PostData) {
 
-        auth.currentUser?.uid?.let{ userId ->
-            postData.likes?.let{ likes ->
-                val newLikes = arrayListOf<String>()
-
-                if(likes.contains(userId)){
-                    newLikes.addAll(likes.filter { userId != it })
-                } else{
-                    newLikes.addAll(likes)
-                    newLikes.add(userId)
-                }
-
-                postData.postId?.let { postId ->
-                    db.collection(POSTS).document(postId).update("Likes", newLikes)
-                        .addOnSuccessListener {
-                            postData.likes = newLikes
-                        }
-                        .addOnFailureListener {
-                            handleException(it, "Unable to like post")
-                        }
-                }
+        auth.currentUser?.uid?.let { userId ->
+            val likes = postData.likes ?: mutableListOf()
+            val newLikes = if (likes.contains(userId)) {
+                likes.filter { it != userId } // Quitar "me gusta"
+            } else {
+                likes + userId // Agregar "me gusta"
             }
 
+            postData.postId?.let { postId ->
+                db.collection(POSTS).document(postId).update("likes", newLikes)
+                    .addOnSuccessListener {
+                        // Actualizar la lista de likes del post en la UI
+                        postData.likes = newLikes
+                        // Refrescar los posts del usuario actual para que la UI se actualice
+                        refreshPosts()
+                    }
+                    .addOnFailureListener {
+                        handleException(it, "Unable to update likes")
+                    }
+            }
         }
 
     }
+
+    fun observePostLikes(postId: String) {
+
+        db.collection(POSTS).document(postId)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w("PostLikes", "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    val updatedPost = snapshot.toObject(PostData::class.java)
+                    updatedPost?.let {
+                        val currentPosts = posts.value.toMutableList()
+                        val index = currentPosts.indexOfFirst { it.postId == postId }
+                        if (index != -1) {
+                            currentPosts[index] = it
+                            posts.value = currentPosts
+                        } else {
+                            // Si el post no está en la lista, agrégalo
+                            currentPosts.add(it)
+                            posts.value = currentPosts
+                        }
+                    }
+                }
+            }
+
+    }
+
+
+    private fun updatePostInList(updatedPost: PostData) {
+
+        val currentPosts = posts.value.toMutableList()
+        val index = currentPosts.indexOfFirst { it.postId == updatedPost.postId }
+        if (index != -1) {
+            currentPosts[index] = updatedPost
+            posts.value = currentPosts // Notificar a la UI del cambio
+        }
+
+    }
+
 
     fun createComment(postId: String, text: String){
 

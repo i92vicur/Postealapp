@@ -118,7 +118,7 @@ fun SignupScreen(navController: NavController, vm: PostealappViewModel) {
                     )
                 }, modifier = Modifier.padding(8.dp)
             ) {
-                Text(text = "SIGN UP")
+                Text(text = "SIGN UP", color = Color.White)
             }
             Text(
                 text = "Already a user? Go to login ->",
