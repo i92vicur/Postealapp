@@ -128,7 +128,7 @@ fun MyPostsScreen(navController: NavController, vm: PostealappViewModel) {
                 ),
                 shape = RoundedCornerShape(10)
             ) {
-                Text(text = "Edit Profile", color = Color.Black)
+                Text(text = "Edit Profile", color = Color.DarkGray)
             }
             PostList(
                 isContextLoading = isLoading,
@@ -182,7 +182,7 @@ fun ProfileImage(imageUrl: String?, onClick: () -> Unit) {
                 painter = painterResource(id = R.drawable.ic_add),
                 colorFilter = ColorFilter.tint(Color.White),
                 contentDescription = "Add a post icon",
-                modifier = Modifier.background(Color.Red)
+                modifier = Modifier.background(MaterialTheme.colorScheme.onSecondary)
             )
 
         }

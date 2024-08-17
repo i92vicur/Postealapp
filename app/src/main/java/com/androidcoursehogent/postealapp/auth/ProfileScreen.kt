@@ -112,7 +112,7 @@ fun ProfileContent(
                 .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "Back", modifier = Modifier.clickable { onBack.invoke() })
+            Text(text = "Back", color = MaterialTheme.colorScheme.onSecondary, modifier = Modifier.clickable { onBack.invoke() })
             Text(text = "Save", color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.clickable { onSave.invoke() })
         }
 
@@ -128,7 +128,7 @@ fun ProfileContent(
                 .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Name", modifier = Modifier.width(100.dp))
+            Text(text = "Name", color = MaterialTheme.colorScheme.onTertiary, modifier = Modifier.width(100.dp))
             TextField(
                 value = name, onValueChange = onNameChange, colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.Transparent,
@@ -145,7 +145,7 @@ fun ProfileContent(
                 .padding(start = 4.dp, end = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Username", modifier = Modifier.width(100.dp))
+            Text(text = "Username", color = MaterialTheme.colorScheme.onTertiary, modifier = Modifier.width(100.dp))
             TextField(
                 value = username,
                 onValueChange = onUsernameChange,
@@ -162,9 +162,9 @@ fun ProfileContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 4.dp, end = 4.dp),
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Bio", modifier = Modifier.width(100.dp))
+            Text(text = "Bio", color = MaterialTheme.colorScheme.onTertiary, modifier = Modifier.width(100.dp))
             TextField(
                 value = bio, onValueChange = onBioChange, colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.Transparent,
@@ -184,7 +184,7 @@ fun ProfileContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("Select Theme")
+            Text(text = "Select Theme", color = MaterialTheme.colorScheme.onTertiary)
             Switch(
                 checked = isDarkTheme,
                 onCheckedChange = { isDarkTheme = it }
@@ -208,7 +208,7 @@ fun ProfileContent(
                 .padding(top = 16.dp, bottom = 16.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(text = "Logout", color = Color.Red, modifier = Modifier.clickable { onLogout.invoke() })
+            Text(text = "Logout", color = MaterialTheme.colorScheme.onSecondary, modifier = Modifier.clickable { onLogout.invoke() })
         }
 
     }

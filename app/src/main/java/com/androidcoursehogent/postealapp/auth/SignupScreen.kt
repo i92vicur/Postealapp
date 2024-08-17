@@ -122,9 +122,9 @@ fun SignupScreen(navController: NavController, vm: PostealappViewModel) {
             }
             Text(
                 text = "Already a user? Go to login ->",
-                color = Color.Blue,
+                color = MaterialTheme.colorScheme.onSecondary,
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(12.dp)
                     .clickable {
                         navigateTo(navController, DestinationScreen.Login)
                     }

@@ -37,8 +37,7 @@ fun BottomNavigationMenu(selectedItem: BottomNavigationItem, navController: NavC
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(top = 5.dp)
-            .background(colorScheme.surface)
-        //.background(Color.White)
+            .background(colorScheme.background)
     ) {
         for (item in BottomNavigationItem.values()) {
             Image(
@@ -56,7 +55,6 @@ fun BottomNavigationMenu(selectedItem: BottomNavigationItem, navController: NavC
                 } else {
                     ColorFilter.tint(colorScheme.onSurfaceVariant) // Color para ícono no seleccionado
                 }
-                //colorFilter = if (item == selectedItem) ColorFilter.tint(Color.Black) else ColorFilter.tint(Color.Gray)
             )
         }
     }

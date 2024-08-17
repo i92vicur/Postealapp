@@ -22,6 +22,8 @@ private val DarkColorScheme = darkColorScheme(
     surface = Color(0xFF1F1E1E), // Color para el fondo de la barra en modo oscuro
     onSurface = Color(0xFFBB86FC), // Color para ícono seleccionado en modo oscuro
     onSurfaceVariant = Color(0xFF888888), // Color para ícono no seleccionado en modo oscuro
+    onSecondary = Color.Red,
+    onTertiary = Color.Gray
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -30,10 +32,12 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Pink40,
 
     //Pruebita para la barra
-    surface = Color(0xFFFFFFFF),
-    background = Color(0xFFFFFFFF),// Color para el fondo de la barra en modo claro
+    surface = Color(0xFFE0E0E0),
+    background = Color(0xFFE0E0E0),// Color para el fondo de la barra en modo claro
     onSurface = Color(0xFF6200EE), // Color para ícono seleccionado en modo claro
-    onSurfaceVariant = Color(0xFF888888) // Color para ícono no seleccionado en modo claro
+    onSurfaceVariant = Color(0xFF888888), // Color para ícono no seleccionado en modo claro
+    onSecondary = Color(0xFFAA1757),
+    onTertiary = Color.Gray
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

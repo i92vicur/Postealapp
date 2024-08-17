@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -68,7 +69,7 @@ fun FeedScreen(navController: NavController, vm: PostealappViewModel) {
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .background(Color.Transparent),
-            horizontalArrangement = Arrangement.Absolute.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             UserImageCard(userImage = userData?.imageUrl)
@@ -83,9 +84,17 @@ fun FeedScreen(navController: NavController, vm: PostealappViewModel) {
                 painter = painterResource(logoResource),
                 contentDescription = "app name logo",
                 modifier = Modifier
-                    .width(200.dp)
+                    .width(160.dp)
                     .padding(8.dp)
-                    .padding(end = 25.dp)
+            )
+
+            Image(
+                painter = painterResource(R.drawable.ic_feed_app_logo),
+                contentDescription = "app icon logo",
+                modifier = Modifier
+                    .height(60.dp)
+                    .padding(8.dp)
+                    .padding(end = 15.dp)
             )
         }
         PostsList(
@@ -143,7 +152,7 @@ fun Post(post: PostData, currentUserId: String, vm: PostealappViewModel, onPosCl
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(top = 4.dp, bottom = 4.dp)
+            .padding(vertical = 4.dp)
     ) {
         Column {
             Row(

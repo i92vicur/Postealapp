@@ -112,12 +112,23 @@ fun SinglePostScreen(navController: NavController, vm: PostealappViewModel, post
                     )
 
                     if (updatedPost.userId == vm.userData.value?.userId) {
-                        Text(
-                            text = "Delete",
-                            color = Color.Red,
-                            modifier = Modifier
-                                .clickable { showDeleteDialog = true }
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Delete",
+                                color = MaterialTheme.colorScheme.onSecondary,
+                                modifier = Modifier
+                                    .clickable { showDeleteDialog = true }
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_delete),
+                                contentDescription = "delete trash can icon",
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .padding(horizontal = 4.dp),
+                            )
+                        }
                     }
                 }
 
@@ -260,7 +271,7 @@ fun SinglePostDisplay(
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            Text(text = post.username ?: "", fontWeight = FontWeight.Bold)
+            Text(text = post.username ?: "", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             Text(text = post.postDescription ?: "", modifier = Modifier.padding(start = 8.dp))
         }
 
@@ -271,7 +282,7 @@ fun SinglePostDisplay(
         ) {
             Text(
                 text = "$nbComments comments",
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onTertiary,
                 modifier = Modifier.clickable {
                     post.postId?.let {
                         navController.navigate(DestinationScreen.CommentsScreen.createRoute(it))
