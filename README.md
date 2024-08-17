@@ -5,7 +5,7 @@ Esta es Postealapp, una aplicación tipo Instagram donde podrás subir tus fotos
 
 ## -Funcionalidades 
    ### ·Disclaimer importante: 
-   La base lógica de esta aplicación se ha basado en la aplicación planteada en [este curso] (https://www.udemy.com/course/instagram_jetpack/learn/lecture/29932274#questions/20478320). De esta se ha conservado parte del sistema de autenticación y la lógica de las screens del feed y la de búsqueda. El resto de la lógica ha sido reimplementada (todo lo relacionado con el single post, comentarios, seguidores, etc.). Por lo demás, como gran parte de la UI, todos los tests, pequeños cambios en la arquitectura (capa de negocio) y funcionalidades adicionales como el modo oscuro o el borrado de un post, son completamente de mi autoría.
+   La base lógica de esta aplicación se ha basado en la aplicación planteada en [este curso](https://www.udemy.com/course/instagram_jetpack/learn/lecture/29932274#questions/20478320). De esta se ha conservado parte del sistema de autenticación y la lógica de las screens del feed y la de búsqueda. El resto de la lógica ha sido reimplementada (todo lo relacionado con el single post, comentarios, seguidores, etc.). Por lo demás, como gran parte de la UI, todos los tests, pequeños cambios en la arquitectura (capa de negocio) y funcionalidades adicionales como el modo oscuro o el borrado de un post, son completamente de mi autoría.
 
    ### ·Funcionamiento: 
    En primer lugar, en la aplicación podrás crearte una cuenta o iniciar sesión en el caso de que ya tengas una. Una vez dentro, aparecerás en la pantalla de tu feed, en la que la primera vez que la veas aparecerán los últimos posts publicados en toda la aplicación, pero cuando sigas a otros usuarios solamente aparecerán sus posts.
