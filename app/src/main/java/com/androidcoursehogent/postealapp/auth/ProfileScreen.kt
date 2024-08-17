@@ -148,7 +148,10 @@ fun ProfileContent(
             Text(text = "Username", color = MaterialTheme.colorScheme.onTertiary, modifier = Modifier.width(100.dp))
             TextField(
                 value = username,
-                onValueChange = onUsernameChange,
+                onValueChange = {
+                    val filteredUsername = it.replace(" ", "") // Elimina los espacios
+                    onUsernameChange(filteredUsername)
+                },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.Transparent,
                     focusedContainerColor = Color.Transparent,
@@ -157,6 +160,7 @@ fun ProfileContent(
                 )
             )
         }
+
 
         Row(
             modifier = Modifier

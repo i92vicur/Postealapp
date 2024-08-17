@@ -340,22 +340,70 @@ class PostealappViewModel @Inject constructor(
         outState.value = sortedPosts
     }
 
-    fun searchPosts(searchTerm: String){
-        if(searchTerm.isNotEmpty()) {
+    fun searchPosts(searchTerm: String) {
+        if (searchTerm.isNotEmpty()) {
             searchedPostProgress.value = true
-            db.collection(POSTS)
+
+            // Realizar la búsqueda en los términos de búsqueda de los posts
+            val postsTask = db.collection(POSTS)
                 .whereArrayContains("searchTerms", searchTerm.trim().lowercase())
                 .get()
-                .addOnSuccessListener {
-                    convertPosts(it, searchedPosts)
-                    searchedPostProgress.value = false
+
+            // Realizar la búsqueda en la colección de usuarios por nombre o nombre de usuario
+            val usersTask = db.collection(USERS)
+                .whereEqualTo("username", searchTerm.trim().lowercase())
+                .get()
+                .continueWithTask { task ->
+                    if (task.isSuccessful && !task.result.isEmpty) {
+                        val userId = task.result.documents.firstOrNull()?.id
+                        db.collection(POSTS)
+                            .whereEqualTo("userId", userId)
+                            .get()
+                    } else {
+                        // Si no se encuentra usuario, buscar por nombre
+                        db.collection(USERS)
+                            .whereEqualTo("name", searchTerm.trim().lowercase())
+                            .get()
+                            .continueWithTask { nameTask ->
+                                if (nameTask.isSuccessful && !nameTask.result.isEmpty) {
+                                    val userId = nameTask.result.documents.firstOrNull()?.id
+                                    db.collection(POSTS)
+                                        .whereEqualTo("userId", userId)
+                                        .get()
+                                } else {
+                                    null // No se encontraron usuarios ni por nombre ni por username
+                                }
+                            }
+                    }
                 }
-                .addOnFailureListener { exc ->
-                    handleException(exc, "Vannot search posts")
-                    searchedPostProgress.value = false
+
+            // Combinar ambos resultados
+            postsTask.continueWithTask { postsTask ->
+                usersTask.continueWith { usersTask ->
+                    val combinedPosts = mutableListOf<PostData>()
+                    if (postsTask.isSuccessful) {
+                        postsTask.result?.let { documents ->
+                            combinedPosts.addAll(documents.toObjects(PostData::class.java))
+                        }
+                    }
+                    if (usersTask.isSuccessful) {
+                        usersTask.result?.let { documents ->
+                            combinedPosts.addAll(documents.toObjects(PostData::class.java))
+                        }
+                    }
+                    combinedPosts
                 }
+            }.addOnSuccessListener { combinedPosts ->
+                val sortedPosts = combinedPosts.sortedByDescending { it.time }
+                searchedPosts.value = sortedPosts
+                searchedPostProgress.value = false
+            }.addOnFailureListener { exc ->
+                handleException(exc, "Cannot search posts")
+                searchedPostProgress.value = false
+            }
         }
     }
+
 
     fun onFollowClick(userId: String) {
 

@@ -110,7 +110,7 @@ fun SearchBar(searchTerm: String, onSearchChange: (String) -> Unit, onSearch: ()
                 onSearch()
                 focusManager.clearFocus()
             }) {
-                Icon(imageVector = Icons.Filled.Search, contentDescription = "Search bar icon")
+                Icon(imageVector = Icons.Filled.Search, tint = MaterialTheme.colorScheme.onSurface, contentDescription = "Search bar icon")
             }
         }
     )

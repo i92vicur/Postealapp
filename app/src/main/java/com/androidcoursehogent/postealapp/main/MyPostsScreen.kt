@@ -207,7 +207,10 @@ fun PostList(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            if (!isContextLoading) Text(text = "No posts available")
+            if (!isContextLoading){
+                Text(text = "No posts available")
+                Text(text = "Search posts by username or description")
+            }
         }
     } else {
         LazyColumn(modifier = modifier) {

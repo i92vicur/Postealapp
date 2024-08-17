@@ -88,7 +88,10 @@ fun SignupScreen(navController: NavController, vm: PostealappViewModel) {
 
             OutlinedTextField(
                 value = usernameState.value,
-                onValueChange = { usernameState.value = it },
+                onValueChange = {
+                    val filteredUsername = it.text.replace(" ", "") //Elimina los espacios
+                    usernameState.value = TextFieldValue(filteredUsername)
+                },
                 modifier = Modifier.padding(8.dp),
                 label = { Text(text = "Username") }
             )
