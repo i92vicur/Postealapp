@@ -148,7 +148,6 @@ fun SinglePostScreen(navController: NavController, vm: PostealappViewModel, post
 
 @Composable
 fun SinglePostDisplay(
-
     navController: NavController,
     vm: PostealappViewModel,
     post: PostData,
@@ -266,6 +265,7 @@ fun SinglePostDisplay(
             )
         }
 
+        // Descripción del post
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -273,6 +273,26 @@ fun SinglePostDisplay(
         ) {
             Text(text = post.username ?: "", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             Text(text = post.postDescription ?: "", modifier = Modifier.padding(start = 8.dp))
+        }
+
+        // Mostrar la ubicación si existe
+        post.location?.let { location ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = "Ubicación: $location",
+                    color = Color.Blue,
+                    modifier = Modifier.clickable {/*
+                        val gmmIntentUri = Uri.parse("geo:0,0?q=${location}")
+                        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                        mapIntent.setPackage("com.google.android.apps.maps")
+                        navController.context.startActivity(mapIntent)*/
+                    }
+                )
+            }
         }
 
         Row(

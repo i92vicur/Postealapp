@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class PostData (
+
     val postId: String? = null,
     val userId: String? = null,
     val username: String? = null,
@@ -12,7 +13,9 @@ data class PostData (
     val postDescription: String? = null,
     val time: Long? = null,
     var likes: List<String>? = null,
-    val searchTerms: List<String>? = null
+    val searchTerms: List<String>? = null,
+    val location: String? = null
+
 ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
@@ -23,7 +26,8 @@ data class PostData (
         parcel.readString(),
         parcel.readValue(Long::class.java.classLoader) as? Long,
         parcel.createStringArrayList(),
-        parcel.createStringArrayList()
+        parcel.createStringArrayList(),
+        parcel.readString()
     ) {
     }
 
@@ -37,6 +41,7 @@ data class PostData (
         parcel.writeValue(time)
         parcel.writeStringList(likes)
         parcel.writeStringList(searchTerms)
+        parcel.writeString(location)
     }
 
     override fun describeContents(): Int {

@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -41,7 +42,6 @@ import com.androidcoursehogent.postealapp.PostealappViewModel
 import com.androidcoursehogent.postealapp.data.PostData
 
 
-
 @Composable
 fun NewPostScreen(navController: NavController, vm: PostealappViewModel, encodedUri: String) {
 
@@ -49,6 +49,7 @@ fun NewPostScreen(navController: NavController, vm: PostealappViewModel, encoded
     var description by rememberSaveable { mutableStateOf("") }
     val scrollState = rememberScrollState()
     val focusManager = LocalFocusManager.current
+    var location by remember { mutableStateOf<String?>(null) }
 
     Surface (
         modifier = Modifier
@@ -70,7 +71,10 @@ fun NewPostScreen(navController: NavController, vm: PostealappViewModel, encoded
                 Text(text = "Cancel", modifier = Modifier.clickable { navController.popBackStack() })
                 Text(text = "Post", color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.clickable {
                     focusManager.clearFocus()
-                    vm.onNewPost(Uri.parse(imageUri), description) { navController.popBackStack() }
+                    // Asegurarse de que la ubicación se pasa al crear el post
+                    vm.onNewPost(Uri.parse(imageUri), description, location) {
+                        navController.popBackStack()
+                    }
                 })
             }
 
@@ -102,11 +106,27 @@ fun NewPostScreen(navController: NavController, vm: PostealappViewModel, encoded
                     )
                 )
             }
-        }
 
+            Button(
+                onClick = {
+                    // Aquí abrirías un selector de ubicaciones, usando Google Maps o Places API.
+                    // Por simplicidad, aquí podrías simular la selección de una ubicación:
+                    location = "Selected Location, City, Country"  // Ejemplo de cadena de ubicación
+                },
+                modifier = Modifier.padding(vertical = 8.dp)
+            ) {
+                Text("Add location")
+            }
+
+            // Mostrar la ubicación seleccionada
+            location?.let {
+                Text(text = "Selected location: $it", modifier = Modifier.padding(16.dp))
+            }
+        }
     }
 
     val inProgress = vm.inProgress.value
     if (inProgress) CommonProgressSpinner()
 
 }
+

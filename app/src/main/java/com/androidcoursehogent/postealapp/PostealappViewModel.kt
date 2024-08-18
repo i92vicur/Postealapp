@@ -254,13 +254,13 @@ class PostealappViewModel @Inject constructor(
         comments.value = listOf()
     }
 
-    fun onNewPost(uri: Uri, description: String, onPostSuccess: () -> Unit) {
+    fun onNewPost(uri: Uri, description: String, location: String? = null, onPostSuccess: () -> Unit) {
         uploadImage(uri) {
-            onCreatePost(it, description, onPostSuccess)
+            onCreatePost(it, description, location, onPostSuccess)  // Pasamos la ubicación aquí
         }
     }
 
-    private fun onCreatePost(imageUri: Uri, description: String, onPostSuccess: () -> Unit) {
+    private fun onCreatePost(imageUri: Uri, description: String, location: String? = null, onPostSuccess: () -> Unit) {
 
         inProgress.value = true
         val currentUid = auth.currentUser?.uid
@@ -274,9 +274,10 @@ class PostealappViewModel @Inject constructor(
             val fillerWords = listOf("the", "be", "to", "is", "of", "and", "or", "a", "an", "in", "it", "am", "are", "have", "has")
             val searchTerms = description
                 .split(" ", ".", ",", "?", "!", "#")
-                .map{ it.lowercase() }
+                .map { it.lowercase() }
                 .filter { it.isNotEmpty() and !fillerWords.contains(it) }
 
+            // Incluimos la ubicación en el post
             val post = PostData(
                 postId = postUuid,
                 userId = currentUid,
@@ -286,7 +287,8 @@ class PostealappViewModel @Inject constructor(
                 postDescription = description,
                 time = System.currentTimeMillis(),
                 likes = listOf<String>(),
-                searchTerms = searchTerms
+                searchTerms = searchTerms,
+                location = location  // Nueva línea: Añadir ubicación al post
             )
 
             db.collection(POSTS).document(postUuid).set(post)
@@ -308,6 +310,7 @@ class PostealappViewModel @Inject constructor(
         }
 
     }
+
 
     private fun refreshPosts(onRefreshed: () -> Unit = {}) {
         val currentUid = auth.currentUser?.uid
