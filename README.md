@@ -21,4 +21,5 @@ Some of the main functionalities of this application have been based on the appl
    + -> The UI has been implemented with Jetpack Compose and the inclusion of specific themes and fonts.
    + -> Apart from Firebase, the Google Maps API has also been included to add a location to publications.
    + -> A couple of unit and navigation UI tests have been included (due to lack of time it has not been possible to test more components).
+   + -> It works without internet as it saves the content locally apart from the firestore server, it just won't update the latest posts and interactions until the device reconnects.
    
