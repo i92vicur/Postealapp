@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -41,7 +42,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.androidcoursehogent.postealapp.PostealappViewModel
 import com.androidcoursehogent.postealapp.data.PostData
 
-
 @Composable
 fun NewPostScreen(navController: NavController, vm: PostealappViewModel, encodedUri: String) {
 
@@ -51,12 +51,22 @@ fun NewPostScreen(navController: NavController, vm: PostealappViewModel, encoded
     val focusManager = LocalFocusManager.current
     var location by remember { mutableStateOf<String?>(null) }
 
+    // Escuchar los cambios de la ubicación seleccionada cuando se regresa de la `MapScreen`
+    val selectedLocation = navController.currentBackStackEntry
+        ?.savedStateHandle
+        ?.getLiveData<String>("location_data")
+        ?.observeAsState()
+
+    // Actualizar la ubicación si se seleccionó algo en la `MapScreen`
+    selectedLocation?.value?.let {
+        location = it
+    }
+
     Surface (
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ){
-
         Column(
             modifier = Modifier
                 .verticalScroll(scrollState)
@@ -71,7 +81,6 @@ fun NewPostScreen(navController: NavController, vm: PostealappViewModel, encoded
                 Text(text = "Cancel", modifier = Modifier.clickable { navController.popBackStack() })
                 Text(text = "Post", color = MaterialTheme.colorScheme.onSurface, modifier = Modifier.clickable {
                     focusManager.clearFocus()
-                    // Asegurarse de que la ubicación se pasa al crear el post
                     vm.onNewPost(Uri.parse(imageUri), description, location) {
                         navController.popBackStack()
                     }
@@ -109,11 +118,9 @@ fun NewPostScreen(navController: NavController, vm: PostealappViewModel, encoded
 
             Button(
                 onClick = {
-                    // Aquí abrirías un selector de ubicaciones, usando Google Maps o Places API.
-                    // Por simplicidad, aquí podrías simular la selección de una ubicación:
-                    location = "Selected Location, City, Country"  // Ejemplo de cadena de ubicación
+                    navController.navigate("map_screen")
                 },
-                modifier = Modifier.padding(vertical = 8.dp)
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
             ) {
                 Text("Add location")
             }
@@ -122,11 +129,10 @@ fun NewPostScreen(navController: NavController, vm: PostealappViewModel, encoded
             location?.let {
                 Text(text = "Selected location: $it", modifier = Modifier.padding(16.dp))
             }
+
         }
     }
 
     val inProgress = vm.inProgress.value
     if (inProgress) CommonProgressSpinner()
-
 }
-

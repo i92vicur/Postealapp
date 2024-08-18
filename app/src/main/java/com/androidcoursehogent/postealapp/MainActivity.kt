@@ -24,6 +24,7 @@ import com.androidcoursehogent.postealapp.auth.SignupScreen
 import com.androidcoursehogent.postealapp.data.PostData
 import com.androidcoursehogent.postealapp.main.CommentsScreen
 import com.androidcoursehogent.postealapp.main.FeedScreen
+import com.androidcoursehogent.postealapp.main.MapScreen
 import com.androidcoursehogent.postealapp.main.MyPostsScreen
 import com.androidcoursehogent.postealapp.main.NewPostScreen
 import com.androidcoursehogent.postealapp.main.NotificationMessage
@@ -57,11 +58,11 @@ sealed class DestinationScreen(val route: String) {
     data object NewPost : DestinationScreen("newpost/{imageUri}") {
         fun createRoute(uri: String) = "newpost/$uri"
     }
-
     data object SinglePost : DestinationScreen("singlepost")
     data object CommentsScreen : DestinationScreen("comments/{postId}"){
         fun createRoute(postId: String) = "comments/$postId"
     }
+    data object Map : DestinationScreen("map_screen")
 }
 
 @Composable
@@ -106,10 +107,15 @@ fun PostealallApp() {
                     SinglePostScreen(navController = navController, post = it, vm = vm)
                 }
             }
-
             composable(DestinationScreen.CommentsScreen.route){ navBackStackEntry ->
                 val postId = navBackStackEntry.arguments?.getString("postId")
                 postId?.let { CommentsScreen(navController = navController, vm = vm, postId = it) }
+            }
+            composable(DestinationScreen.Map.route) {
+                MapScreen(navController = navController) { location ->
+                    vm.selectedLocation = location
+                    navController.popBackStack()
+                }
             }
         }
 

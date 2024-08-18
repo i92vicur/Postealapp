@@ -3,7 +3,9 @@ package com.androidcoursehogent.postealapp
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -53,6 +55,8 @@ class PostealappViewModel @Inject constructor(
     val commentsProgress = mutableStateOf(false)
 
     val followers = mutableStateOf(0)
+
+    var selectedLocation: String? by mutableStateOf(null)
 
     init {
         val currentUser = auth.currentUser
@@ -256,7 +260,7 @@ class PostealappViewModel @Inject constructor(
 
     fun onNewPost(uri: Uri, description: String, location: String? = null, onPostSuccess: () -> Unit) {
         uploadImage(uri) {
-            onCreatePost(it, description, location, onPostSuccess)  // Pasamos la ubicación aquí
+            onCreatePost(it, description, location, onPostSuccess)
         }
     }
 
@@ -275,9 +279,9 @@ class PostealappViewModel @Inject constructor(
             val searchTerms = description
                 .split(" ", ".", ",", "?", "!", "#")
                 .map { it.lowercase() }
-                .filter { it.isNotEmpty() and !fillerWords.contains(it) }
+                .filter { it.isNotEmpty() && !fillerWords.contains(it) }
 
-            // Incluimos la ubicación en el post
+            // Crear el objeto PostData con todos los detalles, incluida la ubicación
             val post = PostData(
                 postId = postUuid,
                 userId = currentUid,
@@ -288,9 +292,10 @@ class PostealappViewModel @Inject constructor(
                 time = System.currentTimeMillis(),
                 likes = listOf<String>(),
                 searchTerms = searchTerms,
-                location = location  // Nueva línea: Añadir ubicación al post
+                location = location  // Incluye la ubicación si está disponible
             )
 
+            // Guardar el post en Firestore
             db.collection(POSTS).document(postUuid).set(post)
                 .addOnSuccessListener {
                     popupNotification.value = Event("Post successfully created")
@@ -304,11 +309,10 @@ class PostealappViewModel @Inject constructor(
                 }
 
         } else {
-            handleException(customMessage = "Error: username unavailable. Unable to create post")
+            handleException(customMessage = "Error: user ID unavailable. Unable to create post")
             onLogout()
             inProgress.value = false
         }
-
     }
 
 

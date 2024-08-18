@@ -283,7 +283,7 @@ fun SinglePostDisplay(
                     .padding(8.dp)
             ) {
                 Text(
-                    text = "Ubicación: $location",
+                    text = "Location: $location",
                     color = Color.Blue,
                     modifier = Modifier.clickable {/*
                         val gmmIntentUri = Uri.parse("geo:0,0?q=${location}")
